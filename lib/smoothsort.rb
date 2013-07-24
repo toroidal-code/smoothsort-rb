@@ -2,35 +2,26 @@ module Enumerable
 
   class SSort
     attr_accessor :q, :r, :p, :b, :c, :r1, :b1, :c1, :N, :a
+
     private
-
-    def self.asc?(vb, vc)
-      vb <= vc
-    end
-
-    def self.up(vb, vc)
-      [vb + vc + 1, vb]
-    end
-
-    def self.down(vb, vc)
-      [vc, vb - vc - 1]
-    end
 
     def self.sift
       r0 = @r1
       t  = @a[r0]
       while @b1 >= 3
         r2 = @r1 - @b1 + @c1
-        if !asc?(@a[@r1 - 1], @a[r2])
+        unless @a[@r1 - 1] <= @a[r2]
           r2       = @r1 - 1
-          @b1, @c1 = down(@b1, @c1)
+          vc       = @c1
+          @b1, @c1 = vc, @b1 - vc - 1
         end
-        if asc?(@a[r2], t)
+        if @a[r2] <= t
           @b1 = 1
         else
           @a[@r1]  = @a[r2]
           @r1      = r2
-          @b1, @c1 = down(@b1, @c1)
+          vc       = @c1
+          @b1, @c1 = vc, @b1 - vc - 1
         end
       end
       if @r1 != r0
@@ -47,7 +38,7 @@ module Enumerable
       while p1 > 0
         while (p1 & 1) == 0
           p1       >>= 1
-          @b1, @c1 = up(@b1, @c1)
+          @b1, @c1 = @b1 + @c1 + 1, @b1
         end
         r3 = @r1 - @b1
         if p1 == 1 or @a[r3] <= t
@@ -59,18 +50,18 @@ module Enumerable
             @r1     = r3
           elsif @b1 >= 3
             r2 = @r1 - @b1 + @c1
-            if !asc?(@a[@r1 - 1], @a[r2])
+            unless @a[@r1 - 1] <= @a[r2]
               r2       = @r1 - 1
-              @b1, @c1 = down(@b1, @c1)
+              @b1, @c1 = @c1, @b1 - @c1 - 1
               p1       <<= 1
             end
-            if asc?(@a[r2], @a[r3])
+            if @a[r2] <= @a[r3]
               @a[@r1] = @a[r3]
               @r1     = r3
             else
               @a[@r1]  = @a[r2]
               @r1      = r2
-              @b1, @c1 = down(@b1, @c1)
+              @b1, @c1 = @c1, @b1 - @c1 - 1
               p1       = 0
             end
           end
@@ -84,7 +75,7 @@ module Enumerable
 
     def self.semitrinkle
       @r1 = @r - @c
-      if !asc?(@a[@r1], @a[@r])
+      unless @a[@r1] <= @a[@r]
         @a[@r], @a[@r1] = @a[@r1], @a[@r]
         trinkle
       end
@@ -107,9 +98,11 @@ module Enumerable
           @b1 = @b
           @c1 = @c
           sift
-          @p     = (@p + 1) >> 2
-          @b, @c = up(@b, @c)
-          @b, @c = up(@b, @c)
+          @p = (@p + 1) >> 2
+
+          @b, @c = @b + @c + 1, @b
+
+          @b, @c = @b + @c + 1, @b
         elsif (@p & 3) == 1
           if (@q + @c) < @n
             @b1 = @b
@@ -118,10 +111,10 @@ module Enumerable
           else
             trinkle
           end
-          @b, @c = down(@b, @c)
+          @b, @c = @c, @b - @c - 1
           @p     <<= 1
           while @b > 1
-            @b, @c = down(@b, @c)
+            @b, @c = @c, @b - @c - 1
             @p     <<= 1
           end
           @p += 1
@@ -141,7 +134,7 @@ module Enumerable
           @p -= 1
           while (@p & 1) == 0
             @p     >>= 1
-            @b, @c = up(@b, @c)
+            @b, @c = @b + @c + 1, @b
           end
         elsif @b >= 3
           @p -= 1
@@ -149,11 +142,11 @@ module Enumerable
           if @p > 0
             semitrinkle
           end
-          @b, @c = down(@b, @c)
+          @b, @c = @c, @b - @c - 1
           @p     = (@p << 1) + 1
           @r     += @c
           semitrinkle
-          @b, @c = down(@b, @c)
+          @b, @c = @c, @b - @c - 1
           @p     = (@p << 1) + 1
           # element q is done
           # element 0 is done
