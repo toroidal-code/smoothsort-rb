@@ -1,5 +1,5 @@
 module Enumerable
-  def ssort
+  def ssort!
     len = self.length
     q   = 1
     idx = 0
@@ -342,6 +342,12 @@ module Enumerable
       end
     end
     self
+  end
+
+  def ssort
+    a = self.clone
+    a.ssort!
+    a
   end
 
 end
