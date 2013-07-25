@@ -3,7 +3,7 @@ require 'smoothsort/version'
 module Enumerable
   # Sorts an array in-place, using the smoothsort algorithm
   #
-  # @return [array] The sorted array
+  # @return [Array] The sorted array
   def ssort!
     len = self.length
     q   = 1
@@ -350,9 +350,10 @@ module Enumerable
   end
 
 
-  # Returns an array containing the items in enum sorted, according to their own <=> method
+  # Returns an array containing the items in enum sorted, according to their own <=> method,
+  # using the smoothsort algorithm
   #
-  # @return [array] The sorted array
+  # @return [Array] The sorted array
   def ssort
     a = self.clone
     a.ssort!
