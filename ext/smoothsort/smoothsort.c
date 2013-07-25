@@ -152,7 +152,7 @@ void smoothsort(VALUE self, const int N){
 
 /* Sorts an array in-place using the smoothsort algorithm
  * 
- * @return [array] The sorted array
+ * @return [Array] The sorted array
  */
 
 static VALUE smoothsort_ssort_bang(VALUE self) {
