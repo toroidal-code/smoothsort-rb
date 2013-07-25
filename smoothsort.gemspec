@@ -5,7 +5,7 @@ require 'smoothsort/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "smoothsort"
-  spec.version       = VERSION
+  spec.version       = Smoothsort::VERSION
   spec.authors       = ["Katherine Whitlock"]
   spec.email         = ["toroidalcode@gmail.com"]
   spec.description = "This is an implementation of Djikstra's smoothsort sorting algorithm, usable on Enumerable objects"
