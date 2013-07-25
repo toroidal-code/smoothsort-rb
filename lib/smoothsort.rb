@@ -1,4 +1,5 @@
 require 'smoothsort/smoothsort'
+require 'smoothsort/version'
 
 module Enumerable
   def ssort
