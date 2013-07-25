@@ -1,4 +1,7 @@
 # Smoothsort
+[![Gem Version](https://badge.fury.io/rb/smoothsort.png)](http://badge.fury.io/rb/smoothsort)
+[![Dependency Status](https://gemnasium.com/toroidal-code/smoothsort-rb.png)](https://gemnasium.com/toroidal-code/smoothsort-rb)
+
 
 This is an implementation of Djikstra's smoothsort algorithm, as both a C extension, and native ruby.
 
