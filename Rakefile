@@ -8,9 +8,4 @@ Rake::TestTask.new(:test) do |test|
   test.verbose = true
 end
 
-task :simplecov do
-  ENV['COVERAGE'] = "true"
-  Rake::Task['test'].exec
-end
-
 task :default => :test
