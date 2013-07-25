@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    smoothsort (1.0.0)
+    smoothsort (1.0.1)
 
 GEM
   remote: https://rubygems.org/
