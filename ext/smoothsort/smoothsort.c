@@ -150,18 +150,17 @@ void smoothsort(VALUE self, const int N){
 	/* element 0 processed */
 }
 
+/* Sorts an array in-place using the smoothsort algorithm
+ * 
+ * @return [array] The sorted array
+ */
+
 static VALUE smoothsort_ssort_bang(VALUE self) {
 	//return RTEST(rb_funcall(rb_ary_entry(self, 0), rb_intern("<="), 1, rb_ary_entry(self, 1))) ? Qtrue : Qfalse;
 	smoothsort(self, (int)RARRAY_LEN(self));
 	return self;
 }
 
-/* static VALUE smoothsort_ssort(VALUE self){ */
-/* 	//rb_funcall(self, rb_intern("print"), 1, A); */
-/* 	//rb_funcall(self, rb_intern("print"), 1, rb_str_new2("\n")); */
-/* 	VALUE clone = rb_funcall(self, rb_intern("clone")) */
-
-/* } */
 
 void Init_smoothsort(void) {
 	VALUE module = rb_define_module("Enumerable");
