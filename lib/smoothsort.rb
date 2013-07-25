@@ -1,3 +1,5 @@
+require 'smoothsort/version'
+
 module Enumerable
   def ssort!
     len = self.length
