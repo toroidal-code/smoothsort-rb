@@ -8,6 +8,10 @@ Add this line to your application's Gemfile:
 
     gem 'smoothsort'
 
+Or for the native ruby version:
+
+    gem 'smoothsort', github: 'toroidal-code/smoothsort-rb', branch: 'pure-ruby'
+
 And then execute:
 
     $ bundle
