@@ -24,7 +24,7 @@ Jeweler::Tasks.new do |gem|
   gem.files = Dir.glob('lib/**/*.rb') +
               Dir.glob('ext/**/*.{c,h,rb}')
   gem.extensions = ['ext/smoothsort/extconf.rb']
-  gem.executables = ['smoothsort']
+  #gem.executables = ['smoothsort']
 end
 Jeweler::RubygemsDotOrgTasks.new
 
