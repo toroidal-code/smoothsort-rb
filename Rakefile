@@ -15,7 +15,7 @@ require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
   gem.name = "smoothsort"
-  gem.homepage = "http://github.com/toroidal-code/smoothsort"
+  gem.homepage = "http://github.com/toroidal-code/smoothsort-rb"
   gem.license = "MIT"
   gem.summary = "The smoothsort algorithm as a gem"
   gem.description = "This is an implementation of Djikstra's smoothsort sorting algorithm, usable on Enumerable objects"
@@ -25,7 +25,6 @@ Jeweler::Tasks.new do |gem|
               Dir.glob('ext/**/*.{c,h,rb}')
   gem.extensions = ['ext/smoothsort/extconf.rb']
   gem.executables = ['smoothsort']
-  # dependencies defined in Gemfile
 end
 Jeweler::RubygemsDotOrgTasks.new
 
