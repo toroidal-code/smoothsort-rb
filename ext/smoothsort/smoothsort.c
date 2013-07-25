@@ -4,7 +4,6 @@
    Second argument to smoothsort added. Functions IsAscending, UP, DOWN
    replaced by macros.
 */
-#include <string.h>
 
 /* Type of items to be sorted; for numeric types, replace by int, float or double */
 
@@ -34,7 +33,7 @@ static inline void sift(){
 		if (IsAscending(rb_ary_entry(A, r2), T)) // A[r2]
 			b1 = 1;
 		else {
-			rb_ary_store(A, r1, rb_ary_entry(A, r2)); // A[r1] = A[2];
+			rb_ary_store(A, r1, rb_ary_entry(A, r2)); // A[r1] = A[r2];
 			r1 = r2;
 			DOWN(b1,c1);
 		}
@@ -48,71 +47,76 @@ static inline void trinkle(void){
 	VALUE T;
 	p1 = p; b1 = b; c1 = c;
 	r0 = r1; 
-	T = rb_ary_get(A, r0); //A[r0]
+	T = rb_ary_entry(A, r0); //A[r0]
 	while (p1 > 0) {
 		while ((p1 & 1) == 0) {
 			p1 >>= 1;
 			UP(b1, c1);
 		}
 		r3 = r1 - b1;
-		if ((p1 == 1) || IsAscending(A[r3], T)) p1 = 0;
+		if ((p1 == 1) || IsAscending(rb_ary_entry(A, r3), T)) //A[r3]
+			p1 = 0;
 		else{
 			p1--;
-			if (b1==1) {
-				A[r1] = A[r3];
+			if (b1 == 1) {
+				rb_ary_store(A, r1, rb_ary_entry(A, r3)); //A[r1] = A[r3];
 				r1 = r3;
 			} else if (b1 >= 3) {
-				r2 = r1-b1+c1;
-				if (! IsAscending(A[r1-1],A[r2])) {
-					r2 = r1-1;
-					DOWN(b1,c1);
+				r2 = r1 - b1 + c1;
+				if (! IsAscending(rb_ary_entry(A, r1 - 1), rb_ary_entry(A, r2))) { // A[r1 - 1], A[r2]
+					r2 = r1 - 1;
+					DOWN(b1, c1);
 					p1 <<= 1;
 				}
-				if (IsAscending(A[r2],A[r3])) {
-					A[r1] = A[r3]; r1 = r3;
+				if (IsAscending(rb_ary_entry(A, r2), rb_ary_entry(A, r3))) { // A[r2], A[r3]
+					rb_ary_store(A, r1, rb_ary_entry(A, r3)); //A[r1] = A[r3]; 
+					r1 = r3;
 				} else {
-					A[r1] = A[r2];
+					rb_ary_store(A, r1, rb_ary_entry(A, r2)); //A[r1] = A[r2];
 					r1 = r2;
-					DOWN(b1,c1);
+					DOWN(b1, c1);
 					p1 = 0;
 				}
 			}
 		}
 	}
-	if (r0-r1) A[r1] = T;
+	if (r0 - r1)
+		rb_ary_store(A, r1, T); //A[r1] = T;
 	sift();
 }
 
 static inline void semitrinkle(void){
-	SItem T;
-	r1 = r-c;
-	if (! IsAscending(A[r1], A[r])) {
-		T = A[r]; A[r] = A[r1]; A[r1] = T;
+	VALUE T;
+	r1 = r - c;
+	if (! IsAscending(rb_ary_entry(A, r1), rb_ary_entry(A, r))) { //A[r1], A[r]
+		T = rb_ary_entry(A, r); //A[r]; 
+		rb_ary_store(A, r, rb_ary_entry(A, r1)); //A[r] = A[r1]; 
+		rb_ary_store(A, r1, T); //A[r1] = T;
 		trinkle();
 	}
 }
 
-void smoothsort(SItem Aarg[], const int N){
+void smoothsort(VALUE self, const int N){
 	int temp;
-	A=Aarg; /* 0-base array; warning: A is shared by other functions */
+	A = self; /* 0-base array; warning: A is shared by other functions */
 	q = 1; r = 0; p = 1; b = 1; c = 1;
 
 	/* building tree */
 	while (q < N) {
 		r1 = r;
-		if ((p & 7)==3) {
+		if ((p & 7) == 3) {
 			b1 = b; c1 = c; sift();
-			p = (p+1) >> 2;
-			UP(b,c); 
-			UP(b,c);
-		} else if ((p & 3)==1) {
+			p = (p + 1) >> 2;
+			UP(b, c); 
+			UP(b, c);
+		} else if ((p & 3) == 1) {
 			if (q + c < N) {
 				b1 = b; c1 = c; sift();
 			} else trinkle();
-			DOWN(b,c);
+			DOWN(b, c);
 			p <<= 1;
 			while (b > 1) {
-				DOWN(b,c);
+				DOWN(b, c);
 				p <<= 1;
 			}
 			p++;
@@ -124,33 +128,40 @@ void smoothsort(SItem Aarg[], const int N){
 	/* building sorted array */
 	while (q > 1) {
 		q--;
-		if (b==1) {
+		if (b == 1) {
 			r--; p--;
-			while ((p & 1)==0) {
+			while ((p & 1) == 0) {
 				p >>= 1;
-				UP(b,c);
+				UP(b, c);
 			}
+		} else if (b >= 3) {
+			p--; r = r-b+c;
+			if (p > 0) {
+				semitrinkle();
+			}
+			DOWN(b,c);
+			p = (p << 1) + 1;
+			r = r + c; semitrinkle();
+			DOWN(b, c);
+			p = (p << 1) + 1;
 		}
-		else
-			if (b >= 3) {
-				p--; r = r-b+c;
-				if (p > 0) {
-					semitrinkle();
-				}
-				DOWN(b,c);
-				p = (p << 1) + 1;
-				r = r+c; semitrinkle();
-				DOWN(b,c);
-				p = (p << 1) + 1;
-			}
 		/* element q processed */
 	}
 	/* element 0 processed */
 }
 
 static VALUE smoothsort_ssort_bang(VALUE self) {
-	return RTEST(rb_funcall(rb_ary_entry(self, 0), rb_intern("<="), 1, rb_ary_entry(self, 1))) ? Qtrue : Qfalse;
+	//return RTEST(rb_funcall(rb_ary_entry(self, 0), rb_intern("<="), 1, rb_ary_entry(self, 1))) ? Qtrue : Qfalse;
+	smoothsort(self, (int)RARRAY_LEN(self));
+	return self;
 }
+
+/* static VALUE smoothsort_ssort(VALUE self){ */
+/* 	//rb_funcall(self, rb_intern("print"), 1, A); */
+/* 	//rb_funcall(self, rb_intern("print"), 1, rb_str_new2("\n")); */
+/* 	VALUE clone = rb_funcall(self, rb_intern("clone")) */
+
+/* } */
 
 void Init_smoothsort(void) {
 	VALUE module = rb_define_module("Enumerable");
