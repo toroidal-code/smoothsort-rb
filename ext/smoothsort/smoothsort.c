@@ -1,4 +1,4 @@
-#include <ruby-2.0.0/ruby.h>
+#include <ruby.h>
 
 /* Adapted from Delphi implementation of Dijkstra's algorithm.
    Second argument to smoothsort added. Functions IsAscending, UP, DOWN
